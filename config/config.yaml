@@ -1,0 +1,21 @@
+Server:
+  RunMode: debug
+  HttpPort: 8000
+  ReadTimeout: 10
+  WriteTimeout: 10
+App:
+  DefaultPageSize: 10
+  MaxPageSize: 100
+  LogSavePath: storage/logs
+  LogFileName: app
+  LogFileExt: .log
+Database:
+  DBType: mysql
+  Username: root
+  Password: rootroot
+  Host: 127.0.0.1:3306
+  DBName: macrochat
+  Charset: utf8
+  ParseTime: True
+  MaxIdleConns: 10
+  MaxOpenConns: 30
