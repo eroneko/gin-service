@@ -11,6 +11,7 @@ import (
 
 func AuthMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
+		// FIXME 认证未通过统一 401 Unauthorized 即可
 		//获取Authorization Header
 		tokenString := c.GetHeader("Authorization")
 		//验证格式

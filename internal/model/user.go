@@ -11,7 +11,7 @@ type User struct {
 	Password  string `gorm:"type:varchar(100);not null" json:"password"`
 	Salt      string `gorm:"type:varchar(40);not null" json:"salt"`
 	Nickname  string `gorm:"type:varchar(20);not null;index:idx_user_nickname" json:"nickname"`
-	AvatarURL string `gorm:"type:varchar(255);not null;default:''" json:"avatar"`
+	AvatarURL string `gorm:"type:varchar(255);not null;default:''" json:"avatar"` // FIXME varchar(255) -> varchar(191)
 	Status    uint8  `gorm:"type:tinyint(1);not null;default:'0'" json:"status"`
 	Deleted   int    `gorm:"type:bigint;not null;unique_index:uk_user_username;default:'0'" json:"deleted"`
 }
