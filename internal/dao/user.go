@@ -28,15 +28,15 @@ func (d *Dao) GetUserByID(params User) (service.GetUserResponse, error) {
 	user := model.User{
 		Model: gorm.Model{ID: params.ID},
 	}
-	_, err := user.Get(d.engine)
+	result, err := user.GetByID(d.engine)
 	if err != nil {
 		return service.GetUserResponse{}, err
 	}
 	resp := service.GetUserResponse{
-		ID:        user.ID,
-		UserName:  user.Username,
-		NickName:  user.Nickname,
-		AvatarURL: user.AvatarURL,
+		ID:        result.ID,
+		UserName:  result.Username,
+		NickName:  result.Nickname,
+		AvatarURL: result.AvatarURL,
 	}
 	return resp, nil
 }
@@ -56,7 +56,13 @@ func (d *Dao) UpdateUser(params User) error {
 		AvatarURL: params.AvatarURL,
 		Password:  params.Password,
 	}
-	return user.Update(d.engine)
+	values := map[string]interface{}{
+		"username": params.Username,
+		"nickname": params.Nickname,
+		"avatar":   params.AvatarURL,
+		"password": params.Password,
+	}
+	return user.Update(d.engine, values)
 }
 
 func (d *Dao) DeleteUser(params User) error {
@@ -70,7 +76,7 @@ func (d *Dao) GetUserID(params User) uint {
 	user := model.User{
 		Username: params.Username,
 	}
-	return user.GetUserID(d.engine)
+	return user.GetID(d.engine)
 }
 
 func (d *Dao) IsUserExist(param User) bool {
@@ -79,12 +85,12 @@ func (d *Dao) IsUserExist(param User) bool {
 		Username: param.Username,
 	}
 	if param.ID > 0 {
-		rows, err := user.Get(d.engine)
-		if err != nil || rows == 0 {
+		_, err := user.GetByID(d.engine)
+		if err != nil {
 			return false
 		}
 		return true
-	} else if user.GetUserID(d.engine) == 0 {
+	} else if user.GetID(d.engine) == 0 {
 		return false
 	}
 	return true
