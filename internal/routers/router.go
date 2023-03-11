@@ -11,17 +11,11 @@ func NewRouter() *gin.Engine {
 	r := gin.Default()
 	apiGroup := r.Group("/api")
 	{
-		// FIXME POST /users or /accounts
-		apiGroup.POST("/user", user.Register)
-		// FIXME DELETE /users or /accounts
-		apiGroup.DELETE("/user/:id", middlewares.AuthMiddleware(), user.Delete)
-		// FIXME PUT /users or /accounts
-		apiGroup.PUT("/user/:id", middlewares.AuthMiddleware(), user.Update)
-		// FIXME POST /sessions
-		apiGroup.GET("/user", user.Login)
-		// FIXME GET /sessions
+		apiGroup.POST("/users", user.Register)
+		apiGroup.DELETE("/users/:id", middlewares.AuthMiddleware(), user.Delete)
+		apiGroup.PUT("/users/:id", middlewares.AuthMiddleware(), user.Update)
+		apiGroup.POST("/sessions", user.Login)
 		apiGroup.GET("/user/info", middlewares.AuthMiddleware(), user.Info)
-		// Also see: https://learn.microsoft.com/en-us/azure/architecture/best-practices/api-design
 	}
 	return r
 }

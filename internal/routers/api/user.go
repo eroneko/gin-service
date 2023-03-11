@@ -29,13 +29,13 @@ func (a User) Login(c *gin.Context) {
 		})
 		return
 	}
-	if !d.IsUserExist(dao.User{Username: req.UserName}) {
+	if !d.IsUserExist(dao.User{Username: req.Username}) {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"message": "user not exist",
 		})
 		return
 	}
-	if err := bcrypt.CompareHashAndPassword([]byte(d.GetHashedPassword(req.UserName)), []byte(req.Password)); err != nil {
+	if err := bcrypt.CompareHashAndPassword([]byte(d.GetHashedPassword(req.Username)), []byte(req.Password)); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"message": "password error",
 		})
@@ -43,7 +43,7 @@ func (a User) Login(c *gin.Context) {
 	}
 	token, err := app.ReleaseToken(model.User{
 		Model: gorm.Model{
-			ID: d.GetUserID(dao.User{Username: req.UserName}),
+			ID: d.GetUserID(dao.User{Username: req.Username}),
 		}})
 	if err != nil {
 		return
@@ -65,7 +65,7 @@ func (a User) Register(c *gin.Context) {
 		})
 		return
 	}
-	if d.IsUserExist(dao.User{Username: req.UserName}) {
+	if d.IsUserExist(dao.User{Username: req.Username}) {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"message": "user already exist",
 		})
@@ -78,7 +78,7 @@ func (a User) Register(c *gin.Context) {
 		})
 		return
 	}
-	if err = d.CreateUser(dao.User{Username: req.UserName, Password: string(hashedPassword)}); err != nil {
+	if err = d.CreateUser(dao.User{Username: req.Username, Password: string(hashedPassword)}); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"message": "create user failed",
 		})
@@ -117,7 +117,7 @@ func (a User) Update(c *gin.Context) {
 	user := dao.User{
 		ID:        currentUser.(service.GetUserResponse).ID,
 		Password:  req.Password,
-		Nickname:  req.NickName,
+		Nickname:  req.Nickname,
 		AvatarURL: req.AvatarURL,
 	}
 	if err := d.UpdateUser(user); err != nil {

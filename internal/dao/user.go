@@ -34,8 +34,8 @@ func (d *Dao) GetUserByID(params User) (service.GetUserResponse, error) {
 	}
 	resp := service.GetUserResponse{
 		ID:        result.ID,
-		UserName:  result.Username,
-		NickName:  result.Nickname,
+		Username:  result.Username,
+		Nickname:  result.Nickname,
 		AvatarURL: result.AvatarURL,
 	}
 	return resp, nil

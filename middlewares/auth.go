@@ -11,13 +11,11 @@ import (
 
 func AuthMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		// FIXME 认证未通过统一 401 Unauthorized 即可
 		//获取Authorization Header
 		tokenString := c.GetHeader("Authorization")
 		//验证格式
 		if tokenString == "" || !strings.HasPrefix(tokenString, "Bearer") {
 			c.JSON(http.StatusUnauthorized, gin.H{
-				"code":    403,
 				"message": "权限不足",
 			})
 			c.Abort()
@@ -27,7 +25,6 @@ func AuthMiddleware() gin.HandlerFunc {
 		token, claims, err := app.ParseToken(tokenString)
 		if err != nil || !token.Valid {
 			c.JSON(http.StatusUnauthorized, gin.H{
-				"code":    403,
 				"message": "权限不足",
 			})
 			c.Abort()
@@ -38,7 +35,6 @@ func AuthMiddleware() gin.HandlerFunc {
 		d := dao.New(global.DBEngine)
 		if !d.IsUserExist(dao.User{ID: userID}) {
 			c.JSON(http.StatusUnauthorized, gin.H{
-				"code":    403,
 				"message": "用户不存在",
 			})
 			c.Abort()
@@ -46,8 +42,7 @@ func AuthMiddleware() gin.HandlerFunc {
 		}
 		response, err := d.GetUserByID(dao.User{ID: userID})
 		if err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{
-				"code":    500,
+			c.JSON(http.StatusUnauthorized, gin.H{
 				"message": "查询用户信息失败",
 			})
 			c.Abort()
