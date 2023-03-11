@@ -56,13 +56,7 @@ func (d *Dao) UpdateUser(params User) error {
 		AvatarURL: params.AvatarURL,
 		Password:  params.Password,
 	}
-	values := map[string]interface{}{
-		"username":   params.Username,
-		"nickname":   params.Nickname,
-		"avatar_url": params.AvatarURL,
-		"password":   params.Password,
-	}
-	return user.Update(d.engine, values)
+	return user.Update(d.engine, user)
 }
 
 func (d *Dao) DeleteUser(params User) error {

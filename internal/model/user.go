@@ -36,8 +36,8 @@ func (a User) Create(db *gorm.DB) error {
 	return db.Create(&a).Error
 }
 
-func (a User) Update(db *gorm.DB, values interface{}) error {
-	return db.Model(&a).Where("deleted = ?", 0).Updates(values).Error
+func (a User) Update(db *gorm.DB, user User) error {
+	return db.Model(&a).Omit("username").Where("deleted = ?", 0).Updates(user).Error
 }
 
 func (a User) Delete(db *gorm.DB) error {
