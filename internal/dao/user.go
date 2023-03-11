@@ -57,10 +57,10 @@ func (d *Dao) UpdateUser(params User) error {
 		Password:  params.Password,
 	}
 	values := map[string]interface{}{
-		"username": params.Username,
-		"nickname": params.Nickname,
-		"avatar":   params.AvatarURL,
-		"password": params.Password,
+		"username":   params.Username,
+		"nickname":   params.Nickname,
+		"avatar_url": params.AvatarURL,
+		"password":   params.Password,
 	}
 	return user.Update(d.engine, values)
 }

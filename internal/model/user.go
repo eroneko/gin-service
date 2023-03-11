@@ -37,7 +37,7 @@ func (a User) Create(db *gorm.DB) error {
 }
 
 func (a User) Update(db *gorm.DB, values interface{}) error {
-	return db.Where("id = ? and deleted = ?", a.ID).Update(&a).Error
+	return db.Model(&a).Where("deleted = ?", 0).Updates(values).Error
 }
 
 func (a User) Delete(db *gorm.DB) error {
