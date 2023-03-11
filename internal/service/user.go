@@ -12,10 +12,6 @@ type UpdateUserRequest struct {
 	AvatarURL string `form:"avatar" binding:"omitempty,min=5,max=100"`
 }
 
-type DeleteUserRequest struct {
-	UserName string `form:"username" binding:"required,min=5,max=100"`
-}
-
 type LoginRequest struct {
 	UserName string `form:"username" binding:"required,min=5,max=100"`
 	Password string `form:"password" binding:"required,min=8,max=100"`

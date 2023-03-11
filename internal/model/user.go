@@ -18,12 +18,12 @@ type User struct {
 
 func (a User) GetHashedPassword(db *gorm.DB) string {
 	var user User
-	db.Where("username = ?", a.Username).First(&user)
+	db.Where("username = ? and deleted = ?", a.Username, 0).First(&user)
 	return user.Password
 }
 
 func (a User) GetByID(db *gorm.DB) (*User, error) {
-	result := db.Where("ID = ?", a.ID).First(&a)
+	result := db.Where("ID = ? and deleted = ?", a.ID, 0).First(&a)
 	if result.Error != nil {
 		return nil, result.Error
 	} else if result.RowsAffected == 0 {
@@ -41,12 +41,12 @@ func (a User) Update(db *gorm.DB, values interface{}) error {
 }
 
 func (a User) Delete(db *gorm.DB) error {
-	return db.Delete(&a).Error
+	return db.Model(&a).Where("deleted = ?", 0).Update("deleted", a.ID).Error
 }
 
 func (a User) GetID(db *gorm.DB) uint {
 	var user User
-	db.Where("username = ?", a.Username).First(&user)
+	db.Where("username = ?  and deleted = ?", a.Username, 0).First(&user)
 	if user.ID > 0 {
 		return user.ID
 	}

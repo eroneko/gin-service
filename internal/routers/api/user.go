@@ -30,13 +30,13 @@ func (a User) Login(c *gin.Context) {
 		return
 	}
 	if !d.IsUserExist(dao.User{Username: req.UserName}) {
-		c.JSON(400, gin.H{
+		c.JSON(http.StatusBadRequest, gin.H{
 			"message": "user not exist",
 		})
 		return
 	}
 	if err := bcrypt.CompareHashAndPassword([]byte(d.GetHashedPassword(req.UserName)), []byte(req.Password)); err != nil {
-		c.JSON(400, gin.H{
+		c.JSON(http.StatusBadRequest, gin.H{
 			"message": "password error",
 		})
 		return
@@ -48,23 +48,9 @@ func (a User) Login(c *gin.Context) {
 	if err != nil {
 		return
 	}
-	c.JSON(200, gin.H{
+	c.JSON(http.StatusOK, gin.H{
 		"token":   token,
 		"message": "login success",
-	})
-	return
-}
-
-func (a User) Info(c *gin.Context) {
-	user, ok := c.Get("user")
-	if !ok {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": "user not exist",
-		})
-		return
-	}
-	c.JSON(200, gin.H{
-		"message": user,
 	})
 	return
 }
@@ -114,8 +100,15 @@ func (a User) Update(c *gin.Context) {
 		})
 		return
 	}
+	userID, err := strconv.ParseUint(c.Param("id"), 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "invalid request body",
+		})
+		return
+	}
 	currentUser, ok := c.Get("user")
-	if strconv.Itoa(int(currentUser.(service.GetUserResponse).ID)) != c.Param("id") || !ok {
+	if currentUser.(service.GetUserResponse).ID != uint(userID) || !ok {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"message": "You can only update your own information",
 		})
@@ -133,32 +126,37 @@ func (a User) Update(c *gin.Context) {
 		})
 		return
 	}
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Update user success",
+	})
 }
 
 func (a User) Delete(c *gin.Context) {
 	d := dao.New(global.DBEngine)
-	var req service.DeleteUserRequest
-	if err := c.ShouldBind(&req); err != nil {
+	userID, err := strconv.ParseUint(c.Param("id"), 10, 64)
+	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"error":   err.Error(),
 			"message": "invalid request body",
 		})
 		return
 	}
-	if !d.IsUserExist(dao.User{Username: req.UserName}) {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": "user not exist",
-		})
-		return
-	}
 	currentUser, ok := c.Get("user")
-	if strconv.Itoa(int(currentUser.(service.GetUserResponse).ID)) != c.Param("id") || !ok {
+	if currentUser.(service.GetUserResponse).ID != uint(userID) || !ok {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"message": "You can't destroy other's account",
 		})
 		return
 	}
-	if err := d.DeleteUser(dao.User{Username: req.UserName}); err != nil {
+	user := dao.User{
+		ID: uint(userID),
+	}
+	if !d.IsUserExist(user) {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "user not exist",
+		})
+		return
+	}
+	if err := d.DeleteUser(user); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"message": "delete user failed",
 		})
@@ -166,6 +164,20 @@ func (a User) Delete(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, gin.H{
 		"message": "delete user success",
+	})
+	return
+}
+
+func (a User) Info(c *gin.Context) {
+	user, ok := c.Get("user")
+	if !ok {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "user not exist",
+		})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"message": user,
 	})
 	return
 }
