@@ -22,6 +22,9 @@ func init() {
 	}
 }
 
+// @title 聊天室 API
+// @version 1.0
+// @description 基于Gin+Gorm+JWT的聊天室API
 func main() {
 	gin.SetMode(global.ServerSetting.RunMode)
 	router := routers.NewRouter()

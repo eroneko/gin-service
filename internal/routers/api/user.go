@@ -19,6 +19,14 @@ func NewUser() User {
 	return User{}
 }
 
+// @Summary 用户登录
+// @Produce  json
+// @Param username body string true "用户名" maxlength(20)
+// @Param password body string true "密码"
+// @Success 200 {string} string "成功"
+// @Failure 400 {string} string "请求错误"
+// @Failure 500 {string} string "内部错误"
+// @Router /sessions [post]
 func (a User) Login(c *gin.Context) {
 	d := dao.New(global.DBEngine)
 	var req service.LoginRequest
@@ -55,6 +63,14 @@ func (a User) Login(c *gin.Context) {
 	return
 }
 
+// @Summary 用户注册
+// @Produce  json
+// @Param username body string true "用户名" maxlength(20)
+// @Param password body string true "密码"
+// @Success 200 {string} string "成功"
+// @Failure 400 {string} string "请求错误"
+// @Failure 500 {string} string "内部错误"
+// @Router /users [post]
 func (a User) Register(c *gin.Context) {
 	d := dao.New(global.DBEngine)
 	var req service.CreateUserRequest
@@ -90,6 +106,17 @@ func (a User) Register(c *gin.Context) {
 	return
 }
 
+// @Summary 修改用户信息
+// @Produce  json
+// @Param id path uint true "ID"
+// @Param username body string false "用户名" maxlength(20)
+// @Param password body string false "密码"
+// @Param nickname body string false "昵称"
+// @Param avatar body string false "头像URL"
+// @Success 200 {string} string "成功"
+// @Failure 400 {string} string "请求错误"
+// @Failure 500 {string} string "内部错误"
+// @Router /users/{id}  [put]
 func (a User) Update(c *gin.Context) {
 	d := dao.New(global.DBEngine)
 	var req service.UpdateUserRequest
@@ -131,6 +158,13 @@ func (a User) Update(c *gin.Context) {
 	})
 }
 
+// @Summary 删除用户信息
+// @Produce  json
+// @Param id path uint true "ID"
+// @Success 200 {string} string "成功"
+// @Failure 400 {string} string "请求错误"
+// @Failure 500 {string} string "内部错误"
+// @Router /users/{id} [delete]
 func (a User) Delete(c *gin.Context) {
 	d := dao.New(global.DBEngine)
 	userID, err := strconv.ParseUint(c.Param("id"), 10, 64)
@@ -168,6 +202,12 @@ func (a User) Delete(c *gin.Context) {
 	return
 }
 
+// @Summary 获得用户信息
+// @Produce  json
+// @Success 200 {string} string "成功"
+// @Failure 400 {string} string "请求错误"
+// @Failure 500 {string} string "内部错误"
+// @Router /users/info [get]
 func (a User) Info(c *gin.Context) {
 	user, ok := c.Get("user")
 	if !ok {
