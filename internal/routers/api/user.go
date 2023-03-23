@@ -1,6 +1,8 @@
 package api
 
 import (
+	"crypto/md5"
+	"encoding/hex"
 	"github.com/eroneko/gin-service/global"
 	"github.com/eroneko/gin-service/internal/dao"
 	"github.com/eroneko/gin-service/internal/model"
@@ -94,7 +96,10 @@ func (a User) Register(c *gin.Context) {
 		})
 		return
 	}
-	if err = d.CreateUser(dao.User{Username: req.Username, Password: string(hashedPassword)}); err != nil {
+	//generate a random avatar from gravatar
+	hashedUsername := md5.Sum([]byte(req.Username))
+	avatarURL := "https://www.gravatar.com/avatar/" + hex.EncodeToString(hashedUsername[:]) + "?d=identicon"
+	if err = d.CreateUser(dao.User{Username: req.Username, Password: string(hashedPassword), AvatarURL: avatarURL}); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"message": "create user failed",
 		})

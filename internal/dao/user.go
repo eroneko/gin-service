@@ -43,8 +43,9 @@ func (d *Dao) GetUserByID(params User) (service.GetUserResponse, error) {
 
 func (d *Dao) CreateUser(params User) error {
 	user := model.User{
-		Username: params.Username,
-		Password: params.Password,
+		Username:  params.Username,
+		Password:  params.Password,
+		AvatarURL: params.AvatarURL,
 	}
 	return user.Create(d.engine)
 }
