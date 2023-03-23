@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>注册</title>
+    <link rel="stylesheet" type="text/css" href="../static/style.css">
+</head>
+<body>
+<div class="login-form">
+    <form method="POST">
+        <h1>注册</h1>
+        <div class="content">
+            <div class="input-field">
+                <input type="text" id="username" placeholder="用户名" name="username" required>
+            </div>
+            <div class="input-field">
+                <input type="password" id="password" placeholder="密码" autocomplete="new-password" required>
+            </div>
+            <div class="input-field">
+                <input type="password" id="confirm_password" placeholder="确认密码" autocomplete="new-password"
+                       required>
+            </div>
+            <a href="#" class="link">忘记密码？</a>
+        </div>
+        <div class="action">
+            <button>注册</button>
+        </div>
+        <div id="modal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeModal()">&times;</span>
+                <p>注册成功!</p>
+                <button onclick="closeModal()">Close</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script>
+    let form = document.querySelector('form');
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const username = form.elements.username.value;
+        const password = form.elements.password.value;
+
+        // 发送请求并处理数据
+        fetch('/users', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({username: username, password: password})
+        })
+            .then(response => {
+                // 处理响应
+                if (response.ok) {
+                    showModal()
+                }
+            })
+            .catch(error => {
+                // 处理错误
+                console.error(error);
+            });
+    });
+
+    function showModal() {
+        var form = document.querySelector('form');
+        if (form.checkValidity()) {
+            var modal = document.getElementById("modal");
+            modal.style.display = "flex";
+        } else {
+            form.reportValidity();
+        }
+    }
+
+    function closeModal() {
+        var modal = document.getElementById("modal");
+        modal.style.display = "none";
+        window.location.href = "/";
+    }
+</script>
+</body>
+</html>

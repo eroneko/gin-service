@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>信息</title>
+    <link rel="stylesheet" type="text/css" href="../static/info_style.css">
+</head>
+<body>
+<div class="shadow overflow">
+    <div id="header"></div>
+    <div id="profile">
+        <div class="image">
+            <img id="avatar"
+                 src="" alt=""/>
+        </div>
+        <div class="name" id="nickname">
+            Daft Punk
+        </div>
+        <div class="nickname" id="username">
+            @daftpunk
+        </div>
+        <div class="location">
+            <i class="material-icons">place</i>Haven
+        </div>
+    </div>
+</div>
+</body>
+</html>
+
+<script>
+    // 获取查询字符串参数
+    const params = new URLSearchParams(location.search);
+    const dataString = params.get('data');
+
+    // 将 JSON 字符串转换为对象或数组
+    const data = JSON.parse(dataString);
+
+    // 处理数据并显示在页面中
+    document.querySelector('#username').textContent = "@" +data.message.username;
+    document.querySelector('#nickname').textContent = data.message.nickname;
+    document.querySelector('#avatar').src = data.message.avatar;
+    document.querySelector('#header').style.background = "url(" + data.message.avatar + ")";
+    document.querySelector('body').style.background = "url(" + data.message.avatar + ")";
+</script>
